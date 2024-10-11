@@ -19,6 +19,7 @@ body {
 
 #input {
     flex: 1;
+    font-family: monospace;
     background-color: #222;
     border: none;
     color: #fff;
