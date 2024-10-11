@@ -10,19 +10,22 @@ const io = new Server(server);
 
 // Serve static files
 app.use(express.static(path.join(__dirname)));
+app.use(express.json()); // To parse JSON request bodies
+
+// Define the command endpoint
+app.post('/api/command', (req, res) => {
+    const command = req.body.command;
+    
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            return res.json({ output: `Error: ${stderr}` });
+        }
+        res.json({ output: stdout });
+    });
+});
 
 io.on('connection', (socket) => {
     console.log('a user connected');
-
-    socket.on('command', (command) => {
-        exec(command, (error, stdout, stderr) => {
-            if (error) {
-                socket.emit('output', `Error: ${stderr}`);
-                return;
-            }
-            socket.emit('output', stdout);
-        });
-    });
 });
 
 const PORT = process.env.PORT || 3000;
