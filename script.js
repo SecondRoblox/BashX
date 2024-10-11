@@ -6,17 +6,21 @@ input.addEventListener('keydown', async function (event) {
         const command = input.value;
         input.value = '';
 
-        // Send command to the server
-        output.innerHTML += `$ ${command}<br>`;
-        const response = await fetch('/api/command', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ command })
-        });
-        const data = await response.json();
-        output.innerHTML += `${data.output}<br>`;
+        // Display command in the output area
+        output.innerHTML += `<span>$ ${command}</span><br>`;
+        
+        try {
+            const response = await fetch('/api/command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command })
+            });
+            const data = await response.json();
+            output.innerHTML += `${data.output}<br>`;
+        } catch (error) {
+            output.innerHTML += `Error: ${error.message}<br>`;
+        }
+
         output.scrollTop = output.scrollHeight; // Scroll to bottom
     }
 });
