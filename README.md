@@ -11,3 +11,11 @@ Select Node.js from the top.
 A Terminal should show up at the button. On the top right of the terminal, 
 it should say npm or bash. Make sure it is on NPM.
 Ask ChatGPT for help if you are confused.
+
+Press Run and Debug, it should give you a green button at the buttom right, or run the following:
+<br>
+npm start
+<br>
+or
+<br>
+node server.js
