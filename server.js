@@ -1,34 +1,40 @@
+// Import required modules
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const { exec } = require('child_process');
 const path = require('path');
 
+// Create an Express application
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Serve static files
-app.use(express.static(path.join(__dirname)));
-app.use(express.json()); // To parse JSON request bodies
+// Middleware to parse JSON request bodies
+app.use(express.json());
 
-// Define the command endpoint
+// Serve static files (e.g., index.html, styles.css, etc.)
+app.use(express.static(path.join(__dirname)));
+
+// Define the /api/command endpoint
 app.post('/api/command', (req, res) => {
-    const command = req.body.command;
-    
+    const command = req.body.command; // Extract the command from the request body
+
     exec(command, (error, stdout, stderr) => {
         if (error) {
-            return res.json({ output: `Error: ${stderr}` });
+            return res.json({ output: `Error: ${stderr}` }); // Send back the error if the command fails
         }
-        res.json({ output: stdout });
+        res.json({ output: stdout }); // Send back the command output as JSON
     });
 });
 
+// Handle socket.io connection
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log('A user connected');
 });
 
-const PORT = process.env.PORT || 3000;
+// Start the server
+const PORT = process.env.PORT || 3000; // Use the environment port or default to 3000
 server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`server.js was just ran returning the port of ${PORT}`);
 });
