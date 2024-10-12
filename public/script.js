@@ -1,34 +1,22 @@
-const output = document.getElementById('output');
-const input = document.getElementById('input');
+const socket = io();
 
-input.addEventListener('keydown', async function (event) {
-    if (event.key === 'Enter') {
-        const command = input.value;
-        input.value = '';
+document.getElementById('input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        const inputField = document.getElementById('input');
+        const command = inputField.value;
+        
+        // Emit the command to the server
+        socket.emit('command', command);
+        inputField.value = ''; // Clear the input
 
-        // Display command in the output area
-        output.innerHTML += `<span>$ ${command}</span><br>`;
-
-        try {
-            const response = await fetch('/api/command', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ command })
-            });
-            
-            // Log the response for debugging
-            console.log('Response:', response);
-
-            const data = await response.json(); // Parse the JSON response
-            
-            // Log the data for debugging
-            console.log('Data:', data);
-            
-            output.innerHTML += `${data.output}<br>`; // Display output
-        } catch (error) {
-            output.innerHTML += `Error: ${error.message}<br>`;
-        }
-
-        output.scrollTop = output.scrollHeight; // Scroll to bottom
+        // Optionally, display the command in the output area
+        const outputArea = document.getElementById('output');
+        outputArea.innerHTML += `<div>$ ${command}</div>`;
     }
+});
+
+// Listen for output from the server
+socket.on('output', (data) => {
+    const outputArea = document.getElementById('output');
+    outputArea.innerHTML += `<div>${data}</div>`;
 });
