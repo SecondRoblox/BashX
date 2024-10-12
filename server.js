@@ -6,13 +6,18 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-app.use(express.static('public')); // Serve static files from the public directory
+// Serve static files from the public directory
+app.use(express.static('public'));
+
+// Route to serve index.html
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html'); // Adjust the path if necessary
+});
 
 io.on('connection', (socket) => {
     console.log('A user connected');
 
     socket.on('command', (cmd) => {
-        // Here you would normally process the command and return the output
         let output;
         try {
             // For demo purposes, we just echo the command
