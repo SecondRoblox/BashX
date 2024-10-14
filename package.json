@@ -11,7 +11,7 @@
     "terminal",
     "web"
   ],
-  "author": "Your Name",
+  "author": "Synapse Studios",
   "license": "ISC",
   "description": "A web-based Bash terminal using Node.js and Socket.IO.",
   "dependencies": {
