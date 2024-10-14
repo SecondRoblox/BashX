@@ -1,41 +1,34 @@
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
+const { Server } = require('socket.io');
+const { exec } = require('child_process');
 const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = new Server(server);
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files
+app.use(express.static(path.join(__dirname)));
+app.use(express.json()); // To parse JSON request bodies
 
-// Route to serve index.html
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// Define the command endpoint
+app.post('/api/command', (req, res) => {
+    const command = req.body.command;
+    
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            return res.json({ output: `Error: ${stderr}` });
+        }
+        res.json({ output: stdout });
+    });
 });
 
 io.on('connection', (socket) => {
-    console.log('A user connected');
-
-    socket.on('command', (cmd) => {
-        let output;
-        try {
-            // For demo purposes, we just echo the command
-            output = `You entered: ${cmd}`;
-        } catch (error) {
-            output = `Error: ${error.message}`;
-        }
-        
-        socket.emit('output', output);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-    });
+    console.log('a user connected');
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
