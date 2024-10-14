@@ -19,3 +19,16 @@ npm start
 or
 <br>
 node server.js
+
+<p>
+I recommend that you deploy with <a href="https://render.com">Render</a>
+</p>
+Render Build Command:
+<br>
+npm install
+<br>
+Render Start Command
+<br>
+npm start
+<br>
+Be sure to fork this repository and link it to Render, or go to https://bashx.onrender.com/
